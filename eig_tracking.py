@@ -103,47 +103,59 @@ for k in range(n_steps):
 f_vandr = lambda lm, t: np.array([[lm*lm, lm, t, 1]]).T
 svd_coplane_thres = 2e-4
 repeated_root_thres = 0.05
+crossing_root_test_thres = 0.2
 
 s_cross = []
 # find potential repeated eigenvalues and their location
 for k in range(1,n_steps):
-    for i in range(1,n):
-        for j in range(i):
-            # assume pair lambda_i and lambda_j crossed
-            t1 = (k-1)/(n_steps-1)
-            t2 = k/(n_steps-1)
-            l1t1 = s_vals[k-1,i]
-            l2t1 = s_vals[k-1,j]
-            l1t2 = s_vals[k,i]
-            l2t2 = s_vals[k,j]
-            # assume case 1, solve lambda_0 and t_0
-            # (lambda - lambda_0)^2 + b_1 (t-t0) = 0
-            V = np.hstack([f_vandr(l1t1, t1), f_vandr(l2t1, t1),
-                           f_vandr(l1t2, t2), f_vandr(l2t2, t2)])
-            #print('V.shape = ', V.shape)
-            u,s,vh = np.linalg.svd(V)
-            umin = u[:, np.argmin(s)]
-            umin = umin / umin[0]  # the d1, d2, d3
-            l0 = -umin[1]/2
-            b1 = umin[2]
-            t0 = (l0*l0 - umin[3]) / b1
-            if not (t1 <= t0 and t0 <= t2 and s[-1] < svd_coplane_thres):
-                continue
-            h = A + t0 * B
-            egval, egvec = np.linalg.eig(h)
-            megval = (l1t1+l2t1+l1t2+l2t2)/4
-            #print('::', abs(egval - megval))
-            #print('::', np.argsort(abs(egval - megval)))
-            l1t0, l2t0 = egval[np.argsort(abs(egval - megval))[0:2]]
-            if abs(l1t0 - l2t0) > repeated_root_thres:
-                continue
-            s_cross.append((t0, l0))
-            print('Potential crossing k=%d, smin = %.2g:\n  t1,t0,t2=%.3f, %.3f, %.3f\n' % \
-                    (k, s[-1], t1, t0, t2), \
-                    '  lt1 =', l1t1, ', ', l2t1, '\n', \
-                    '  lt0 =', l1t0, ', ', l2t0, '\n', \
-                    '  lt0_guessed =', l0, '\n', \
-                    '  lt2 =', l1t2, ', ', l2t2, '\n')
+    # find close pairs of eigenvalues
+    diff = abs(s_vals[k, :][:,np.newaxis] - s_vals[k, :][np.newaxis,:])
+    id_so_diff = np.argsort(diff.flatten())
+    n_close = np.sum(diff.flatten() < crossing_root_test_thres)
+    for id_pick_close in range(n, n_close):
+        ij1d = id_so_diff[id_pick_close]
+        i = ij1d // n
+        j = ij1d % n
+        if i <= j:
+            continue
+        # assume pair lambda_i and lambda_j crossed
+        t1 = (k-1)/(n_steps-1)
+        t2 = k/(n_steps-1)
+        l1t1 = s_vals[k-1,i]
+        l2t1 = s_vals[k-1,j]
+        l1t2 = s_vals[k,i]
+        l2t2 = s_vals[k,j]
+        # assume case 1, solve lambda_0 and t_0
+        # (lambda - lambda_0)^2 + b_1 (t-t0) = 0
+        V = np.hstack([f_vandr(l1t1, t1), f_vandr(l2t1, t1),
+                        f_vandr(l1t2, t2), f_vandr(l2t2, t2)])
+        #print('V.shape = ', V.shape)
+        u,s,vh = np.linalg.svd(V)
+        umin = u[:, np.argmin(s)]
+        umin = umin / umin[0]  # the d1, d2, d3
+        l0 = -umin[1]/2
+        b1 = umin[2]
+        t0 = (l0*l0 - umin[3]) / b1
+        #if np.imag(t0) > 1e-9:
+        #    print('What?? t0=', t0)
+        t0 = np.real(t0)
+        if not (t1 <= t0 and t0 <= t2 and s[-1] < svd_coplane_thres):
+            continue
+        h = A + t0 * B
+        egval, egvec = np.linalg.eig(h)
+        megval = (l1t1+l2t1+l1t2+l2t2)/4
+        #print('::', abs(egval - megval))
+        #print('::', np.argsort(abs(egval - megval)))
+        l1t0, l2t0 = egval[np.argsort(abs(egval - megval))[0:2]]
+        if abs(l1t0 - l2t0) > repeated_root_thres:
+            continue
+        s_cross.append((t0, l0))
+        print('Potential crossing k=%d, smin = %.2g:\n  t1,t0,t2=%.3f, %.3f, %.3f\n' % \
+                (k, s[-1], t1, t0, t2), \
+                '  lt1 =', l1t1, ', ', l2t1, '\n', \
+                '  lt0 =', l1t0, ', ', l2t0, '\n', \
+                '  lt0_guessed =', l0, '\n', \
+                '  lt2 =', l1t2, ', ', l2t2, '\n')
 
 #plt.figure(34)
 #plt.plot(s_vals.real)
