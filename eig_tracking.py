@@ -101,6 +101,8 @@ for k in range(n_steps):
     s_vecs[k, :, :] = vec_dir_ref[1]
 
 f_vandr = lambda lm, t: np.array([[lm*lm, lm, t, 1]]).T
+svd_coplane_thres = 2e-4
+repeated_root_thres = 0.05
 
 s_cross = []
 # find potential repeated eigenvalues and their location
@@ -125,7 +127,7 @@ for k in range(1,n_steps):
             l0 = -umin[1]/2
             b1 = umin[2]
             t0 = (l0*l0 - umin[3]) / b1
-            if not (t1 <= t0 and t0 <= t2 and s[-1] < 2e-4):
+            if not (t1 <= t0 and t0 <= t2 and s[-1] < svd_coplane_thres):
                 continue
             h = A + t0 * B
             egval, egvec = np.linalg.eig(h)
@@ -133,7 +135,7 @@ for k in range(1,n_steps):
             #print('::', abs(egval - megval))
             #print('::', np.argsort(abs(egval - megval)))
             l1t0, l2t0 = egval[np.argsort(abs(egval - megval))[0:2]]
-            if abs(l1t0 - l2t0) > 0.05:
+            if abs(l1t0 - l2t0) > repeated_root_thres:
                 continue
             s_cross.append((t0, l0))
             print('Potential crossing k=%d, smin = %.2g:\n  t1,t0,t2=%.3f, %.3f, %.3f\n' % \
