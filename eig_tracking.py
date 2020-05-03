@@ -2,7 +2,7 @@
 
 #import autograd.numpy as np
 import numpy as np
-from numpy import linspace, ones
+from numpy import linspace, ones, abs
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -79,7 +79,7 @@ def pick_eigen_direction(egval, egvec, direction_ref, mode, ord=0):
         raise ValueError()
 
 n = 10
-n_steps = 500
+n_steps = 1000
 np.random.seed(3264632)
 A = np.random.rand(n,n)-0.5
 B = np.random.rand(n,n)-0.5
@@ -93,12 +93,55 @@ s_vecs = np.zeros((n_steps, n, n), dtype='complex128')
 s_vals = np.zeros((n_steps, n), dtype='complex128')
 
 for k in range(n_steps):
-    h = A + 0.99*k/n_steps * B
+    h = A + k/(n_steps-1) * B
     egval, egvec = np.linalg.eig(h)
     #eig_pick, vec_dir_ref = egval, egvec
     vec_dir_ref = pick_eigen_direction(egval, egvec, vec_dir_ref, 'close-egval')
     s_vals[k, :] = vec_dir_ref[0]
     s_vecs[k, :, :] = vec_dir_ref[1]
+
+f_vandr = lambda lm, t: np.array([[lm*lm, lm, t, 1]]).T
+
+s_cross = []
+# find potential repeated eigenvalues and their location
+for k in range(1,n_steps):
+    for i in range(1,n):
+        for j in range(i):
+            # assume pair lambda_i and lambda_j crossed
+            t1 = (k-1)/(n_steps-1)
+            t2 = k/(n_steps-1)
+            l1t1 = s_vals[k-1,i]
+            l2t1 = s_vals[k-1,j]
+            l1t2 = s_vals[k,i]
+            l2t2 = s_vals[k,j]
+            # assume case 1, solve lambda_0 and t_0
+            # (lambda - lambda_0)^2 + b_1 (t-t0) = 0
+            V = np.hstack([f_vandr(l1t1, t1), f_vandr(l2t1, t1),
+                           f_vandr(l1t2, t2), f_vandr(l2t2, t2)])
+            #print('V.shape = ', V.shape)
+            u,s,vh = np.linalg.svd(V)
+            umin = u[:, np.argmin(s)]
+            umin = umin / umin[0]  # the d1, d2, d3
+            l0 = -umin[1]/2
+            b1 = umin[2]
+            t0 = (l0*l0 - umin[3]) / b1
+            if not (t1 <= t0 and t0 <= t2 and s[-1] < 2e-4):
+                continue
+            h = A + t0 * B
+            egval, egvec = np.linalg.eig(h)
+            megval = (l1t1+l2t1+l1t2+l2t2)/4
+            #print('::', abs(egval - megval))
+            #print('::', np.argsort(abs(egval - megval)))
+            l1t0, l2t0 = egval[np.argsort(abs(egval - megval))[0:2]]
+            if abs(l1t0 - l2t0) > 0.05:
+                continue
+            s_cross.append((t0, l0))
+            print('Potential crossing k=%d, smin = %.2g:\n  t1,t0,t2=%.3f, %.3f, %.3f\n' % \
+                    (k, s[-1], t1, t0, t2), \
+                    '  lt1 =', l1t1, ', ', l2t1, '\n', \
+                    '  lt0 =', l1t0, ', ', l2t0, '\n', \
+                    '  lt0_guessed =', l0, '\n', \
+                    '  lt2 =', l1t2, ', ', l2t2, '\n')
 
 #plt.figure(34)
 #plt.plot(s_vals.real)
@@ -114,6 +157,10 @@ fig = plt.figure(234)
 ax = fig.gca(projection='3d')
 for ie in range(n):
   ax.plot3D(tt, s_vals.real[:,ie], s_vals.imag[:,ie])
+
+t_c = [t[0] for t in s_cross]
+l_c = [t[1] for t in s_cross]
+ax.scatter3D(t_c, np.real(l_c), np.imag(l_c), marker='o')
 
 ax.set_xlabel('t')
 ax.set_ylabel('eigval-real')
