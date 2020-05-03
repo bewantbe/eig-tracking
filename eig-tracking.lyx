@@ -29,9 +29,10 @@
 \bibtex_command default
 \index_command default
 \paperfontsize default
+\spacing single
 \use_hyperref false
 \papersize default
-\use_geometry false
+\use_geometry true
 \use_package amsmath 1
 \use_package amssymb 1
 \use_package cancel 1
@@ -44,6 +45,7 @@
 \use_package undertilde 1
 \cite_engine basic
 \cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
@@ -55,6 +57,10 @@
 \shortcut idx
 \color #008000
 \end_index
+\leftmargin 2cm
+\topmargin 2cm
+\rightmargin 2cm
+\bottommargin 2cm
 \secnumdepth 3
 \tocdepth 3
 \paragraph_separation indent
@@ -79,12 +85,366 @@
 Eig Tracking
 \end_layout
 
+\begin_layout Standard
+In this note, we study the connection between matrix 
+\begin_inset Formula $A$
+\end_inset
+
+ and 
+\begin_inset Formula $B$
+\end_inset
+
+ in the point of view of eigenvalues and potentially eigenvectors.
+\end_layout
+
 \begin_layout Section
-Eig
+Characteristic polynomial of linear matrix function
+\end_layout
+
+\begin_layout Standard
+For the 
+\begin_inset Formula $n\times n$
+\end_inset
+
+ matrix
+\begin_inset Formula 
+\begin{equation}
+C(t)=tA+(1-t)B\quad t\in[0,1]
+\end{equation}
+
+\end_inset
+
+the characterisstic polynomial is
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)=\det\left(C(t)-\lambda I\right)=\det\left(tA+(1-t)B-\lambda I\right).
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+It easy to show that 
+\begin_inset Formula $p_{t}(\lambda)$
+\end_inset
+
+ has the form
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)=-\lambda^{n}+q_{1}(t)\lambda^{n-1}+\cdots+q_{n-1}(t)\lambda+q_{n}(t),\label{eq:charac-ql}
+\end{equation}
+
+\end_inset
+
+where 
+\begin_inset Formula $q_{k}(t)\in\mathbb{C}[t]$
+\end_inset
+
+ and 
+\begin_inset Formula $\deg(q_{k})\leq k$
+\end_inset
+
+.
+ Intuitively, due to 
+\begin_inset Formula $p_{t}(t)$
+\end_inset
+
+ is of degree 
+\begin_inset Formula $n$
+\end_inset
+
+ at most, rigorously due to 
+\begin_inset Formula $q_{k}(t)$
+\end_inset
+
+ is the sum of all 
+\begin_inset Formula $k$
+\end_inset
+
+-rowed diagonal minors of the matrix 
+\begin_inset Formula $C(t)$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
-Eig at is.
+Taylor expansion of characterisstic polynomial around repeated eigenvalues
+\end_layout
+
+\begin_layout Standard
+Due to Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:charac-ql"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, for characterisstic polynomial 
+\begin_inset Formula $p_{t}(\lambda)$
+\end_inset
+
+ at 
+\begin_inset Formula $t=t_{0}$
+\end_inset
+
+, the second-order Taylor expansion around eigenvalue 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+ is
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+a_{1}\left(\lambda-\lambda_{0}\right)+b_{2}\left(t-t_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+c_{2}\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)+h.o.t.\label{eq:taylor-ptl-2order}
+\end{equation}
+
+\end_inset
+
+In principle, 
+\begin_inset Formula $a_{1},a_{2},b_{1},b_{2},c_{2}$
+\end_inset
+
+ can be expressed in terms of 
+\begin_inset Formula $q_{n},q_{n-1},q_{n-2}$
+\end_inset
+
+, i.e.
+ by
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)=q_{n-2}(t_{0})\lambda^{2}+\left(q_{n-1}'(t_{0})t+q_{n-1}(t_{0})\right)\lambda+\left(q_{n}''(t_{0})t^{2}/2+q_{n}'(t_{0})t+q_{n}(t_{0})\right)+h.o.t.
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Since 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+ is a repeated root of 
+\begin_inset Formula $p_{t_{0}}(\lambda)=0$
+\end_inset
+
+, it must has form
+\begin_inset Formula 
+\begin{equation}
+p_{t_{0}}(\lambda)=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+h.o.t.
+\end{equation}
+
+\end_inset
+
+i.e.
+ 
+\begin_inset Formula $a_{1}=0$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Assume 
+\begin_inset Formula $\lambda_{1}(t)$
+\end_inset
+
+ and 
+\begin_inset Formula $\lambda_{2}(t)$
+\end_inset
+
+ are two continued trajectories that crossed somewhere at 
+\begin_inset Formula $t=t_{0}\in[t_{1},t_{2}]$
+\end_inset
+
+.
+ We have
+\begin_inset Formula 
+\begin{equation}
+\begin{cases}
+p_{t_{1}}(\lambda_{1}(t_{1}))=0\\
+p_{t_{1}}(\lambda_{2}(t_{1}))=0\\
+p_{t_{2}}(\lambda_{1}(t_{2}))=0\\
+p_{t_{2}}(\lambda_{2}(t_{2}))=0.
+\end{cases}\label{eq:p1-p2}
+\end{equation}
+
+\end_inset
+
+Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:taylor-ptl-2order"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ has six unknows (including 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{0}$
+\end_inset
+
+), we still need to simplify it:
+\end_layout
+
+\begin_layout Itemize
+When 
+\begin_inset Formula $b_{1}\neq0$
+\end_inset
+
+, then 
+\begin_inset Formula $b_{2}\left(t-t_{0}\right)^{2}$
+\end_inset
+
+ is higher-order-term, which can be dropped
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)|_{b_{1}\neq0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+c_{2}\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)+h.o.t.
+\end{equation}
+
+\end_inset
+
+this is the parabolic-like case.
+ Note
+\begin_inset Formula 
+\begin{align}
+p_{t}(\lambda)|_{b_{1}\neq0} & =\left(\sqrt{a_{2}}\left(\lambda-\lambda_{0}\right)+\frac{1}{2}\frac{c_{2}}{\sqrt{a_{2}}}\left(t-t_{0}\right)\right)^{2}-\left(\frac{1}{2}\frac{c_{2}}{\sqrt{a_{2}}}\left(t-t_{0}\right)\right)^{2}+b_{1}\left(t-t_{0}\right)+h.o.t.\\
+ & =\left(\sqrt{a_{2}}\left(\lambda-\lambda_{0}\right)+\frac{1}{2}\frac{c_{2}}{\sqrt{a_{2}}}\left(t-t_{0}\right)\right)^{2}+b_{1}\left(t-t_{0}\right)+h.o.t.
+\end{align}
+
+\end_inset
+
+when evaluating 
+\begin_inset Formula $\lambda$
+\end_inset
+
+ near 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+, the following migh be good enough
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)|_{b_{1}\neq0,c_{2}=0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+h.o.t.
+\end{equation}
+
+\end_inset
+
+since if 
+\begin_inset Formula $\lambda-\lambda_{0}\sim h$
+\end_inset
+
+ then 
+\begin_inset Formula $t-t_{0}\sim h^{2}$
+\end_inset
+
+, 
+\begin_inset Formula $\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)\sim h^{3}$
+\end_inset
+
+ a h.o.t.
+ What's more, Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:p1-p2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ tells only the root, thus only the ratio between 
+\begin_inset Formula $a_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+ is important, rather than their absolute size.
+ Now we can solve 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{0}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+When 
+\begin_inset Formula $b_{1}=0$
+\end_inset
+
+
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)|_{b_{1}=0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{2}\left(t-t_{0}\right)^{2}+c_{2}\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)+h.o.t.
+\end{equation}
+
+\end_inset
+
+this is the crossing line case, which can be seen after a rotation of elimating
+ 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+.
+ Again, with Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:p1-p2"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, only the ratio between 
+\begin_inset Formula $a_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{2}$
+\end_inset
+
+ and 
+\begin_inset Formula $c_{2}$
+\end_inset
+
+ is important.
+ Note that in geometry, solving of line crossing need only four points.
+\end_layout
+
+\begin_layout Itemize
+It is possible that 
+\begin_inset Formula $b_{1}=0$
+\end_inset
+
+ and 
+\begin_inset Formula $b_{2}=0$
+\end_inset
+
+, which is a higher order case.
+ It is paired with triple-repeated root.
+ No further discussion, since it is too rare.
 \end_layout
 
 \begin_layout Section
@@ -96,7 +456,7 @@ Projection of a conic section is still a conic section
 \end_layout
 
 \begin_layout Standard
-conic section is the curve 
+The conic section is the curve 
 \begin_inset Formula $\left\{ \left(x,y\right)\right\} $
 \end_inset
 
@@ -144,7 +504,13 @@ It is obvious that
 \begin_inset Formula $\left(x',y'\right)$
 \end_inset
 
- still satisfy a quadratic equation (or degenerate).
+ still satisfy a quadratic equation (or degenerated).
+ Also the type of the conic section is conserved, as can seen by geometry
+ of the trends of 
+\begin_inset Formula $(x,y)$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Subsection
@@ -158,15 +524,20 @@ i.e.
 \begin_inset Formula $\left\{ \lambda(t)|t\in\mathbb{R}\right\} $
 \end_inset
 
+ to the solution of 
+\begin_inset Formula $\lambda(t)$
+\end_inset
+
  where
 \begin_inset Formula 
-\[
-a\lambda^{2}(t)+b\lambda(t)+c=t,\quad a,b,c\in\mathbb{C}
-\]
+\begin{equation}
+a\lambda^{2}(t)+b\lambda(t)+c=t,\quad a,b,c\in\mathbb{C}\label{eq:lambda-quad-t-full}
+\end{equation}
 
 \end_inset
 
-is hyperbolic curves in complex plain 
+is hyperbolic curves (or degenerated into cross lines) in complex plain
+ 
 \begin_inset Formula $\left(\mathrm{Im}(\lambda),\mathrm{Re}(\lambda)\right)$
 \end_inset
 
@@ -174,15 +545,15 @@ is hyperbolic curves in complex plain
 \end_layout
 
 \begin_layout Standard
-Proof: Note that for the model equation
+Proof: Consider the model quadratic equation
 \begin_inset Formula 
 \begin{equation}
-\lambda^{2}=c+t\label{eq:lambda-t-quad}
+\lambda^{2}=c+t.\label{eq:lambda-quad-t}
 \end{equation}
 
 \end_inset
 
-and
+We have
 \begin_inset Formula 
 \[
 \mathrm{Im}(c+t)=\mathrm{Im}(c)=\mathrm{Im}(\lambda^{2})=2\mathrm{Im}(\lambda)\mathrm{Re}(\lambda).
@@ -194,18 +565,29 @@ and
 \end_layout
 
 \begin_layout Standard
-The other cases are just rotation and zooming of Eq.
+The full case Eq.
  
 \begin_inset CommandInset ref
 LatexCommand eqref
-reference "eq:lambda-t-quad"
+reference "eq:lambda-quad-t-full"
 plural "false"
 caps "false"
 noprefix "false"
 
 \end_inset
 
-.
+ is just rotation and zooming of Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:lambda-quad-t"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, as can be seen by complete-the-square technique.
 \end_layout
 
 \end_body
