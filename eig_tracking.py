@@ -101,6 +101,7 @@ for k in range(n_steps):
     s_vecs[k, :, :] = vec_dir_ref[1]
 
 f_vandr = lambda lm, t: np.array([[lm*lm, lm, t, 1]]).T
+f_vandr_l = lambda lm, t: np.array([[lm*lm, lm, t*lm, t, 1]]).T
 svd_coplane_thres = 2e-4
 repeated_root_thres = 0.05
 crossing_root_test_thres = 0.2
@@ -128,7 +129,7 @@ for k in range(1,n_steps):
         # assume case 1, solve lambda_0 and t_0
         # (lambda - lambda_0)^2 + b_1 (t-t0) = 0
         V = np.hstack([f_vandr(l1t1, t1), f_vandr(l2t1, t1),
-                        f_vandr(l1t2, t2), f_vandr(l2t2, t2)])
+                       f_vandr(l1t2, t2), f_vandr(l2t2, t2)])
         #print('V.shape = ', V.shape)
         u,s,vh = np.linalg.svd(V)
         umin = u[:, np.argmin(s)]
@@ -149,13 +150,32 @@ for k in range(1,n_steps):
         l1t0, l2t0 = egval[np.argsort(abs(egval - megval))[0:2]]
         if abs(l1t0 - l2t0) > repeated_root_thres:
             continue
-        s_cross.append((t0, l0))
         print('Potential crossing k=%d, smin = %.2g:\n  t1,t0,t2=%.3f, %.3f, %.3f\n' % \
                 (k, s[-1], t1, t0, t2), \
                 '  lt1 =', l1t1, ', ', l2t1, '\n', \
                 '  lt0 =', l1t0, ', ', l2t0, '\n', \
                 '  lt0_guessed =', l0, '\n', \
-                '  lt2 =', l1t2, ', ', l2t2, '\n')
+                '  lt2 =', l1t2, ', ', l2t2)
+        # Refinement
+        V = np.hstack([f_vandr_l(l1t1, t1), f_vandr_l(l2t1, t1),
+                       f_vandr_l(l1t0, t0), f_vandr_l(l2t0, t0),
+                       f_vandr_l(l1t2, t2), f_vandr_l(l2t2, t2)])
+        u_l, s_l, vh_l = np.linalg.svd(V)
+        d = u_l[:, -1]
+        lm_s = np.roots([d[0]*d[2], 2*d[0]*d[3], d[1]*d[3]-d[2]*d[4]])
+        t0_s = -(2*d[0]*lm_s + d[1]) / d[2]   # could be unstable due to small u_l[2]
+        # picking a solution
+        id_s = [j for j in range(2) \
+                  if abs(np.imag(t0_s[j]))<1e-10 and \
+                     t1 <= np.real(t0_s[j]) and np.real(t0_s[j]) <= t2]
+        print('  Refinement: t0_s =', t0_s, '  lm_s =', lm_s)
+        if len(id_s) == 0:
+            print("Didn't pass refinement test.")
+            s_cross.append((t0, l0))
+            continue
+        if len(id_s) == 2:
+            print("Multiple solution?!!")
+        s_cross.append((np.real(t0_s[id_s[0]]), lm_s[id_s[0]]))
 
 #plt.figure(34)
 #plt.plot(s_vals.real)

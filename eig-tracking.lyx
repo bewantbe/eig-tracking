@@ -114,7 +114,7 @@ C(t)=tA+(1-t)B\quad t\in[0,1]
 
 \end_inset
 
-the characterisstic polynomial is
+the characteristic polynomial is
 \begin_inset Formula 
 \begin{equation}
 p_{t}(\lambda)=\det\left(C(t)-\lambda I\right)=\det\left(tA+(1-t)B-\lambda I\right).
@@ -171,7 +171,7 @@ where
 \end_layout
 
 \begin_layout Subsection
-Taylor expansion of characterisstic polynomial around repeated eigenvalues
+Taylor expansion of characteristic polynomial around repeated eigenvalues
 \end_layout
 
 \begin_layout Standard
@@ -186,7 +186,7 @@ noprefix "false"
 
 \end_inset
 
-, for characterisstic polynomial 
+, for characteristic polynomial 
 \begin_inset Formula $p_{t}(\lambda)$
 \end_inset
 
@@ -289,7 +289,7 @@ noprefix "false"
 
 \end_inset
 
- has six unknows (including 
+ has six unknowns (including 
 \begin_inset Formula $\lambda_{0}$
 \end_inset
 
@@ -312,7 +312,7 @@ When
  is higher-order-term, which can be dropped
 \begin_inset Formula 
 \begin{equation}
-p_{t}(\lambda)|_{b_{1}\neq0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+c_{2}\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)+h.o.t.
+p_{t}(\lambda)|_{b_{1}\neq0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+c_{2}\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)+h.o.t.\label{eq:taylor-ptl-2order-b-nz}
 \end{equation}
 
 \end_inset
@@ -335,7 +335,7 @@ when evaluating
 \begin_inset Formula $\lambda_{0}$
 \end_inset
 
-, the following migh be good enough
+, the following might be good enough
 \begin_inset Formula 
 \begin{equation}
 p_{t}(\lambda)|_{b_{1}\neq0,c_{2}=0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+h.o.t.
@@ -400,8 +400,8 @@ p_{t}(\lambda)|_{b_{1}=0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{2}\left(t
 
 \end_inset
 
-this is the crossing line case, which can be seen after a rotation of elimating
- 
+this is the crossing line case, which can be seen after a rotation of eliminatin
+g 
 \begin_inset Formula $c_{2}$
 \end_inset
 
@@ -523,11 +523,11 @@ where
 \end_layout
 
 \begin_layout Standard
-We can then filter out fake solution by
+We can then filter out fake solution by:
 \end_layout
 
 \begin_layout Itemize
-smallest singular value should be zero or small
+Smallest singular value should be zero or small
 \end_layout
 
 \begin_layout Itemize
@@ -539,11 +539,11 @@ The imaginary part of
 \end_layout
 
 \begin_layout Itemize
-the roots of 
+The roots of 
 \begin_inset Formula $p_{t_{0}}(\lambda)=0$
 \end_inset
 
- should be repeated around 
+ should be repeated and around 
 \begin_inset Formula $\lambda_{1}$
 \end_inset
 
@@ -552,6 +552,141 @@ the roots of
 \end_inset
 
 .
+\end_layout
+
+\begin_layout Standard
+If further 
+\begin_inset Formula $C(t)$
+\end_inset
+
+ is a real matrix, then 
+\begin_inset Formula $b_{1}$
+\end_inset
+
+ should be real too.
+\end_layout
+
+\begin_layout Standard
+Final refinement, from Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:taylor-ptl-2order-b-nz"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{align}
+p_{t}(\lambda)|_{b_{1}\neq0} & =a_{2}\lambda^{2}+\left(-2a_{2}\lambda_{0}-c_{2}t_{0}\right)\lambda+c_{2}t\lambda+\left(b_{1}-c_{2}\lambda_{0}\right)t+\left(-b_{1}t_{0}+a_{2}\lambda_{0}^{2}+c_{2}t_{0}\lambda_{0}\right)+h.o.t.\\
+ & =d_{0}\lambda^{2}+d_{1}\lambda+d_{2}t\lambda+d_{3}t+d_{4}+h.o.t.\nonumber 
+\end{align}
+
+\end_inset
+
+thus
+\begin_inset Formula 
+\[
+\begin{cases}
+a_{2}=d_{0}\\
+c_{2}=d_{2}
+\end{cases}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+-b_{1}t_{0}+c_{2}t_{0}\lambda_{0}=-t_{0}d_{3}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\begin{align*}
+a_{2}\lambda_{0}^{2}-d_{3}t_{0} & =d_{4}\\
+-2a_{2}\lambda_{0}-c_{2}t_{0} & =d_{1}
+\end{align*}
+
+\end_inset
+
+i.e.
+ solve 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+ in
+\begin_inset Formula 
+\[
+a_{2}\lambda_{0}^{2}+d_{3}/c_{2}\left(2a_{2}\lambda_{0}+d_{1}\right)=d_{4}
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+a_{2}\lambda_{0}^{2}+2a_{2}d_{3}/c_{2}\lambda_{0}+d_{1}d_{3}/c_{2}-d_{4}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+d_{0}\lambda_{0}^{2}+2d_{0}d_{3}/d_{2}\lambda_{0}+d_{1}d_{3}/d_{2}-d_{4}=0
+\]
+
+\end_inset
+
+
+\begin_inset Formula 
+\[
+d_{0}d_{2}\lambda_{0}^{2}+2d_{0}d_{3}\lambda_{0}+d_{1}d_{3}-d_{2}d_{4}=0
+\]
+
+\end_inset
+
+then find a real 
+\begin_inset Formula $t_{0}$
+\end_inset
+
+ in between 
+\begin_inset Formula $t_{1}$
+\end_inset
+
+ and 
+\begin_inset Formula $t_{2}$
+\end_inset
+
+.
+\begin_inset Formula 
+\[
+t_{0}=-\left(2d_{0}\lambda_{0}+d_{1}\right)/d_{2}
+\]
+
+\end_inset
+
+and
+\begin_inset Formula 
+\[
+b_{1}=d_{3}+d_{2}\lambda_{0}
+\]
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
