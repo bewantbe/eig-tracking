@@ -884,6 +884,30 @@ In principle, topology should help, since it is a continuous change.
 What is the maximun number of crossing???
 \end_layout
 
+\begin_layout Standard
+—
+\end_layout
+
+\begin_layout Standard
+Tips: https://en.wikipedia.org/wiki/Avoided_crossing
+\end_layout
+
+\begin_layout Standard
+When it is crossed, we may use perturbation to make it not cross.
+\end_layout
+
+\begin_layout Standard
+When it is not crossed but looks like crossed, we my add 
+\begin_inset Quotes eld
+\end_inset
+
+perturbation
+\begin_inset Quotes erd
+\end_inset
+
+ to make it really crossed.
+\end_layout
+
 \begin_layout Section
 Appendix
 \end_layout
