@@ -84,8 +84,8 @@ np.random.seed(3264632)
 A = np.random.rand(n,n)-0.5
 B = np.random.rand(n,n)-0.5
 
-A = np.diag(np.linspace(0.3,1.3,n))
-B = 0.3*(np.random.rand(n,n)-0.5)
+#A = np.diag(np.linspace(0.3,1.3,n))
+#B = 0.3*(np.random.rand(n,n)-0.5)
 
 egval, egvec = np.linalg.eig(A)
 
@@ -108,6 +108,7 @@ f_vandr_l = lambda lm, t: np.array([[lm*lm, lm, t*lm, t, 1]]).T
 svd_coplane_thres = 2e-4
 repeated_root_thres = 0.05
 crossing_root_test_thres = 0.2
+t0_imag_thres = 1e-10
 
 s_cross = []
 # find potential repeated eigenvalues and their location
@@ -148,8 +149,6 @@ for k in range(1,n_steps):
         h = A + t0 * B
         egval, egvec = np.linalg.eig(h)
         megval = (l1t1+l2t1+l1t2+l2t2)/4
-        #print('::', abs(egval - megval))
-        #print('::', np.argsort(abs(egval - megval)))
         l1t0, l2t0 = egval[np.argsort(abs(egval - megval))[0:2]]
         if abs(l1t0 - l2t0) > repeated_root_thres:
             continue
@@ -168,8 +167,9 @@ for k in range(1,n_steps):
         lm_s = np.roots([d[0]*d[2], 2*d[0]*d[3], d[1]*d[3]-d[2]*d[4]])
         t0_s = -(2*d[0]*lm_s + d[1]) / d[2]   # could be unstable due to small u_l[2]
         # picking a solution
+        # TODO: maybe check s_l[-1] also?
         id_s = [j for j in range(2) \
-                  if abs(np.imag(t0_s[j]))<1e-10 and \
+                  if abs(np.imag(t0_s[j])) < t0_imag_thres and \
                      t1 <= np.real(t0_s[j]) and np.real(t0_s[j]) <= t2]
         print('  Refinement: t0_s =', t0_s, '  lm_s =', lm_s)
         if len(id_s) == 0:

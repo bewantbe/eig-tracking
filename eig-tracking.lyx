@@ -109,7 +109,7 @@ For the
  matrix
 \begin_inset Formula 
 \begin{equation}
-C(t)=tA+(1-t)B\quad t\in[0,1]
+C(t)=(1-t)A+tB\quad t\in[0,1]
 \end{equation}
 
 \end_inset
@@ -117,7 +117,7 @@ C(t)=tA+(1-t)B\quad t\in[0,1]
 the characteristic polynomial is
 \begin_inset Formula 
 \begin{equation}
-p_{t}(\lambda)=\det\left(C(t)-\lambda I\right)=\det\left(tA+(1-t)B-\lambda I\right).
+p_{t}(\lambda)=\det\left(C(t)-\lambda I\right)=\det\left((1-t)A+tB-\lambda I\right).
 \end{equation}
 
 \end_inset
@@ -218,7 +218,7 @@ In principle,
  by
 \begin_inset Formula 
 \begin{equation}
-p_{t}(\lambda)=q_{n-2}(t_{0})\lambda^{2}+\left(q_{n-1}'(t_{0})t+q_{n-1}(t_{0})\right)\lambda+\left(q_{n}''(t_{0})t^{2}/2+q_{n}'(t_{0})t+q_{n}(t_{0})\right)+h.o.t.
+p_{t}(\lambda)=q_{n-2}(t_{0})\lambda^{2}+\left(q_{n-1}'(t_{0})t+q_{n-1}(t_{0})\right)\lambda+\left(q_{n}''(t_{0})t^{2}/2+q_{n}'(t_{0})t+q_{n}(t_{0})\right)+h.o.t.\label{eq:tarlor-ptl-2order-q}
 \end{equation}
 
 \end_inset
@@ -309,7 +309,7 @@ When
 \begin_inset Formula $b_{2}\left(t-t_{0}\right)^{2}$
 \end_inset
 
- is higher-order-term, which can be dropped
+ is a higher-order-term, which can be dropped
 \begin_inset Formula 
 \begin{equation}
 p_{t}(\lambda)|_{b_{1}\neq0}=a_{2}\left(\lambda-\lambda_{0}\right)^{2}+b_{1}\left(t-t_{0}\right)+c_{2}\left(t-t_{0}\right)\left(\lambda-\lambda_{0}\right)+h.o.t.\label{eq:taylor-ptl-2order-b-nz}
@@ -375,7 +375,7 @@ noprefix "false"
 \begin_inset Formula $b_{1}$
 \end_inset
 
- is important, rather than their absolute size.
+ is important, rather than their absolute value.
  Now we can solve 
 \begin_inset Formula $\lambda_{0}$
 \end_inset
@@ -429,12 +429,12 @@ noprefix "false"
 \begin_inset Formula $c_{2}$
 \end_inset
 
- is important.
+ are important.
  Note that in geometry, solving of line crossing need only four points.
 \end_layout
 
 \begin_layout Itemize
-It is possible that 
+It is possible that both 
 \begin_inset Formula $b_{1}=0$
 \end_inset
 
@@ -443,12 +443,12 @@ It is possible that
 \end_inset
 
 , which is a higher order case.
- It is paired with triple-repeated root.
- No further discussion, since it is too rare.
+ It is might related to triple-repeated root.
+ It is too rarem, no further discussion.
 \end_layout
 
-\begin_layout Standard
-Numerical computation.
+\begin_layout Subsection
+Numerical computation of crossing eigenvalues
 \end_layout
 
 \begin_layout Standard
@@ -476,7 +476,7 @@ How to solve
 \begin_inset Formula $b_{1}$
 \end_inset
 
-?
+? It is a nonlinear equation:
 \end_layout
 
 \begin_layout Standard
@@ -523,7 +523,7 @@ where
 \end_layout
 
 \begin_layout Standard
-We can then filter out fake solution by:
+We can then filter out fake solutions by:
 \end_layout
 
 \begin_layout Itemize
@@ -535,7 +535,8 @@ The imaginary part of
 \begin_inset Formula $t_{0}$
 \end_inset
 
- should be zero or small
+ should be zero or small (seems not very useful in practice, it is always
+ not small, order of 0.01~0.1).
 \end_layout
 
 \begin_layout Itemize
@@ -564,10 +565,16 @@ If further
 \end_inset
 
  should be real too.
+ Might be used to further simplify the code to find crossing point, i.e.
+ we could solve the crossing point by geometry of parabolic.
+\end_layout
+
+\begin_layout Subsubsection
+Refinement step
 \end_layout
 
 \begin_layout Standard
-Final refinement, from Eq.
+From Eq.
  
 \begin_inset CommandInset ref
 LatexCommand eqref
@@ -670,10 +677,10 @@ then find a real
 \begin_inset Formula $t_{2}$
 \end_inset
 
-.
+:
 \begin_inset Formula 
 \[
-t_{0}=-\left(2d_{0}\lambda_{0}+d_{1}\right)/d_{2}
+t_{0}=-\left(2d_{0}\lambda_{0}+d_{1}\right)/d_{2},
 \]
 
 \end_inset
@@ -681,12 +688,200 @@ t_{0}=-\left(2d_{0}\lambda_{0}+d_{1}\right)/d_{2}
 and
 \begin_inset Formula 
 \[
-b_{1}=d_{3}+d_{2}\lambda_{0}
+b_{1}=d_{3}+d_{2}\lambda_{0}.
 \]
 
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+If 
+\begin_inset Formula $d_{2}$
+\end_inset
+
+ is too small such that the above procedure is unstable, we could solve
+ 
+\begin_inset Formula $t_{0}$
+\end_inset
+
+ first instead of 
+\begin_inset Formula $\lambda_{0}$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Case of no repeated root
+\end_layout
+
+\begin_layout Standard
+Let's start from Eq.
+ 
+\begin_inset CommandInset ref
+LatexCommand eqref
+reference "eq:tarlor-ptl-2order-q"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, it is now
+\begin_inset Formula 
+\begin{equation}
+p_{t}(\lambda)=q_{n-1}(t_{0})\lambda+q_{n}'(t_{0})t+q_{n}(t_{0})+h.o.t.\label{eq:tarlor-ptl-1order-q}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We know that
+\begin_inset Formula 
+\[
+q_{n}(t_{0})=-(-1)^{n}\det\left((1-t_{0})A+t_{0}B\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+For 
+\begin_inset Formula $q_{n-1}$
+\end_inset
+
+, we need expression of sub determinates.
+\end_layout
+
+\begin_layout Standard
+If we have both the left and right eigenvalue-eigenvector set, and they
+ are complete
+\begin_inset Formula 
+\[
+C=P\Lambda P^{-1}=Q^{-1}\Lambda Q
+\]
+
+\end_inset
+
+so
+\begin_inset Formula 
+\[
+C=P\Lambda Q
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+How eigenvector change
+\end_layout
+
+\begin_layout Standard
+Model case, see the 
+\begin_inset Formula $2\times2$
+\end_inset
+
+ case in LyX doc 
+\begin_inset Quotes eld
+\end_inset
+
+The eigensystem problem
+\begin_inset Quotes erd
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+More complex cases might be reduced to this 
+\begin_inset Formula $2\times2$
+\end_inset
+
+ cases.
+\end_layout
+
+\begin_layout Subsection
+How to consider the eigen-space of two crossing eigenvalues as a whole
+\end_layout
+
+\begin_layout Standard
+Purpose: avoid singularity of eigen-space when 
+\begin_inset Formula $t$
+\end_inset
+
+ change.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\begin{equation}
+C\begin{bmatrix}\alpha_{1} & \alpha_{2}\end{bmatrix}=\begin{bmatrix}\alpha_{1} & \alpha_{2}\end{bmatrix}\begin{bmatrix}\lambda_{1} & 0\\
+0 & \lambda_{2}
+\end{bmatrix}
+\end{equation}
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+...
+\end_layout
+
+\begin_layout Subsection
+Coarse grained asymptotic behaviour of eigenvalues
+\end_layout
+
+\begin_layout Standard
+Often we see eigenvalues nearly across eachother, where their tendency is
+ very similar to the crossing eigenvalues.
+ Is it possible to develop a asymptotic that skip the 
+\begin_inset Quotes eld
+\end_inset
+
+crossing
+\begin_inset Quotes erd
+\end_inset
+
+ point, but describe the asymptotics away from the point?????!!!!
+\end_layout
+
+\begin_layout Subsection
+Why the eigenvalues will cross or will not cross??
+\end_layout
+
+\begin_layout Standard
+Consider the two paths: 
+\begin_inset Formula $A_{1}\rightarrow A_{2}\rightarrow A_{3}$
+\end_inset
+
+ v.s.
+ 
+\begin_inset Formula $A_{1}\rightarrow A_{3}$
+\end_inset
+
+, do they have the same number of crossing in general? why and why not?
+\end_layout
+
+\begin_layout Standard
+In principle, topology should help, since it is a continuous change.
+ Also if they have the same number, we must able to construct a super complex
+ case that make the number of crossing huge.
+ So how are they diminished??
+\end_layout
+
+\begin_layout Standard
+What is the maximun number of crossing???
 \end_layout
 
 \begin_layout Section
