@@ -84,6 +84,9 @@ np.random.seed(3264632)
 A = np.random.rand(n,n)-0.5
 B = np.random.rand(n,n)-0.5
 
+A = np.diag(np.linspace(0.3,1.3,n))
+B = 0.3*(np.random.rand(n,n)-0.5)
+
 egval, egvec = np.linalg.eig(A)
 
 id_sort = np.argsort(abs(egval))
@@ -171,11 +174,52 @@ for k in range(1,n_steps):
         print('  Refinement: t0_s =', t0_s, '  lm_s =', lm_s)
         if len(id_s) == 0:
             print("Didn't pass refinement test.")
-            s_cross.append((t0, l0))
+            s_cross.append((t0, np.nan))  # make a refinement but do not plot
             continue
         if len(id_s) == 2:
             print("Multiple solution?!!")
         s_cross.append((np.real(t0_s[id_s[0]]), lm_s[id_s[0]]))
+
+egval, egvec = np.linalg.eig(A)
+
+id_sort = np.argsort(abs(egval))
+vec_dir_ref = (egval[id_sort], egvec[:, id_sort])
+
+s_vals_l = np.zeros((n_steps+len(s_cross), n), dtype='complex128')
+s_vecs_l = np.zeros((n_steps+len(s_cross), n, n), dtype='complex128')
+tt = linspace(0, 1, n_steps)
+tt_l = np.zeros(n_steps+len(s_cross))
+
+# generate eigen list including crossing points
+k = 0
+kk = 0
+for idc in range(len(s_cross)):
+    while k < (n_steps-1) * s_cross[idc][0]:
+        egval = s_vals[k, :]
+        egvec = s_vecs[k, :]
+        vec_dir_ref = pick_eigen_direction(egval, egvec, vec_dir_ref, 'close-egval')
+        s_vals_l[kk, :] = vec_dir_ref[0]
+        s_vecs_l[kk, :, :] = vec_dir_ref[1]
+        tt_l[kk] = tt[k]
+        k += 1
+        kk += 1
+    h = A + s_cross[idc][0] * B
+    egval, egvec = np.linalg.eig(h)
+    vec_dir_ref = pick_eigen_direction(egval, egvec, vec_dir_ref, 'close-egval')
+    s_vals_l[kk, :] = vec_dir_ref[0]
+    s_vecs_l[kk, :, :] = vec_dir_ref[1]
+    tt_l[kk] = s_cross[idc][0]
+    kk += 1
+
+while k < n_steps:
+    egval = s_vals[k, :]
+    egvec = s_vecs[k, :]
+    vec_dir_ref = pick_eigen_direction(egval, egvec, vec_dir_ref, 'close-egval')
+    s_vals_l[kk, :] = vec_dir_ref[0]
+    s_vecs_l[kk, :, :] = vec_dir_ref[1]
+    tt_l[kk] = tt[k]
+    k += 1
+    kk += 1
 
 #plt.figure(34)
 #plt.plot(s_vals.real)
@@ -190,8 +234,9 @@ tt = linspace(0, 1, n_steps)
 fig = plt.figure(234)
 ax = fig.gca(projection='3d')
 for ie in range(n):
-  ax.plot3D(tt, s_vals.real[:,ie], s_vals.imag[:,ie])
+  ax.plot3D(tt_l, s_vals_l.real[:,ie], s_vals_l.imag[:,ie])
 
+# mark crossing points
 t_c = [t[0] for t in s_cross]
 l_c = [t[1] for t in s_cross]
 ax.scatter3D(t_c, np.real(l_c), np.imag(l_c), marker='o')
@@ -199,6 +244,13 @@ ax.scatter3D(t_c, np.real(l_c), np.imag(l_c), marker='o')
 ax.set_xlabel('t')
 ax.set_ylabel('eigval-real')
 ax.set_zlabel('eigval-imag')
+
+# only the real part
+plt.figure(3)
+for ie in range(n):
+    plt.plot(tt_l, s_vals_l.real[:,ie])
+    plt.xlabel('t')
+    plt.ylabel('Re(eig)')
 
 plt.show()
 
